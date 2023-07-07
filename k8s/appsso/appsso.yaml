@@ -1,0 +1,50 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: sso.apps.tanzu.vmware.com/v1alpha1
+kind: AuthServer
+metadata:
+  name: basic-authserver
+  labels:
+    name: basic-authserver
+  annotations:
+    sso.apps.tanzu.vmware.com/allow-unsafe-identity-provider: ""
+spec:
+  replicas: 1
+  identityProviders:
+    - name: "internal"
+      internalUnsafe:
+        users:
+          - username: "user"
+            password: "password"
+  tokenSignature:
+    signAndVerifyKeyRef:
+      name: "authserver-signing-key"
+---
+apiVersion: secretgen.k14s.io/v1alpha1
+kind: RSAKey
+metadata:
+  name: authserver-signing-key
+spec:
+  secretTemplate:
+    type: Opaque
+    stringData:
+      key.pem: $(privateKey)
+      pub.pem: $(publicKey)
+---
+apiVersion: sso.apps.tanzu.vmware.com/v1alpha1
+kind: ClientRegistration
+metadata:
+  name: basic-client-registration
+spec:
+  authServerSelector:
+    matchLabels:
+      name: basic-authserver
+  redirectURIs:
+    - #@ "https://demo2." + domain + "/login/oauth2/code/sso"
+  requireUserConsent: false
+  clientAuthenticationMethod: client_secret_basic
+  authorizationGrantTypes:
+    - client_credentials
+    - authorization_code
+  scopes:
+    - name: "openid"

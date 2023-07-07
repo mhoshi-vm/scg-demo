@@ -1,0 +1,14 @@
+apiVersion: "tanzu.vmware.com/v1"
+kind: SpringCloudGatewayRouteConfig
+metadata:
+  name: demo-route-ratelimit
+spec:
+  service:
+    name: octant-dashboard
+    port: 8080
+  routes:
+    - predicates:
+        - Path=/**
+      filters:
+        - StripPrefix=0
+      ssoEnabled: true

@@ -1,0 +1,39 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: "tanzu.vmware.com/v1"
+kind: SpringCloudGateway
+metadata:
+  name: demo-gateway
+spec:
+  sso:
+    secret: basic-client-registration
+----
+apiVersion: "tanzu.vmware.com/v1"
+kind: SpringCloudGatewayMapping
+metadata:
+  name: demo-mapping
+spec:
+  gatewayRef:
+    name: demo-gateway
+  routeConfigRef:
+    name: demo-route
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: tap-ingress-selfsigned
+spec:
+  rules:
+    - host: #@ "demo-gateway." + data.values.domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-gateway
+                port:
+                  number: 80
