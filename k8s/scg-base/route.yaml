@@ -1,0 +1,13 @@
+apiVersion: "tanzu.vmware.com/v1"
+kind: SpringCloudGatewayRouteConfig
+metadata:
+  name: demo-route
+spec:
+  service:
+    name: demo
+    port: 8080
+  routes:
+    - predicates:
+        - Path=/**
+      filters:
+        - StripPrefix=0

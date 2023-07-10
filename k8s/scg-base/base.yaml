@@ -8,7 +8,7 @@ metadata:
 spec:
   sso:
     secret: basic-client-registration
-----
+---
 apiVersion: "tanzu.vmware.com/v1"
 kind: SpringCloudGatewayMapping
 metadata:
@@ -23,8 +23,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: demo-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: tap-ingress-selfsigned
 spec:
   rules:
     - host: #@ "demo-gateway." + data.values.domain

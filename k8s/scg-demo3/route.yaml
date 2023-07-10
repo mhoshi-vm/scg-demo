@@ -1,10 +1,10 @@
 apiVersion: "tanzu.vmware.com/v1"
 kind: SpringCloudGatewayRouteConfig
 metadata:
-  name: demo-route-ratelimit
+  name: demo-route
 spec:
   service:
-    name: octant-dashboard
+    name: demo
     port: 8080
   routes:
     - predicates:
